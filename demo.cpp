@@ -12,28 +12,32 @@ struct point {
 int n, m;
 point a[MAXN];
 int dist[MAXN];
-
+//Hàm so sánh hai điểm trên mặt phẳng
 bool cmp(point A, point B) {
     if (A.x != B.x) return A.x < B.x;
     return A.y < B.y;
 }
-
+//kiểm tra tính chất lưỡng phân của ba điểm A, B, C
 bool ccw(point A, point B, point C) {
     return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
 }
-
+//Tìm bao lồi của tập điểm P trên mặt phẳng
 vector<point> convex_hull( vector<point> P) {
     int n = P.size(), k = 0;
     vector<point> H(2 * n);
-    sort(P.begin(), P.end(), cmp);
+    sort(P.begin(), P.end(), cmp); // Sắp xếp các điểm theo thứ tự tăng dần của hoành độ
+    
+    // Xây dựng nửa trái của bao lồi
     for (int i = 0; i < n; ++i) {
         while (k >= 2 && !ccw(H[k-2], H[k-1], P[i])) k--;
         H[k++] = P[i];
     }
+    // Xây dựng nửa phải của bao lồi
     for (int i = n-2, t = k+1; i >= 0; i--) {
         while (k >= t && !ccw(H[k-2], H[k-1], P[i])) k--;
         H[k++] = P[i];
     }
+    // Loại bỏ các điểm thừa
     H.resize(k-1);
     return H;
 }
